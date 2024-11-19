@@ -1,10 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class UndoButtonView extends JButton{
+public class UndoButton extends JButton implements CompositeShape{
     private boolean undoEnabled = true; // Tracks the current state
-    public abstract void notifyChange(){}
-    public UndoButtonView() {
+    public UndoButton() {
         setPreferredSize(new Dimension(100, 100));
         setFocusPainted(false);
         setBorderPainted(false);
@@ -12,15 +11,7 @@ public class UndoButtonView extends JButton{
     }
 
     @Override
-    public void notifyChange() {
-        // Called when the model state changes
-        // You can update the view based on the model's state
-        undoEnabled = !undoEnabled; // Example state change (customize as needed)
-        repaint(); // Repaint to reflect the state change
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
+    public void draw(Graphics2D g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
 
@@ -39,5 +30,15 @@ public class UndoButtonView extends JButton{
 
         // Rounded Rectangle
         g2.drawRoundRect(15, 40, 70, 50, 10, 10);
+    }
+
+    @Override
+    public CompositeShape createShape(int x, int y) {
+        return null;
+    }
+
+    @Override
+    public void setSelectable(boolean selectable) {
+
     }
 }
