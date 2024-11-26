@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class UndoButton extends JButton implements CompositeShape{
+public class UndoButton extends JButton {
     private boolean undoEnabled = true; // Tracks the current state
     public UndoButton() {
         setPreferredSize(new Dimension(100, 100));
@@ -10,7 +10,6 @@ public class UndoButton extends JButton implements CompositeShape{
         setContentAreaFilled(false);
     }
 
-    @Override
     public void draw(Graphics2D g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
@@ -32,12 +31,12 @@ public class UndoButton extends JButton implements CompositeShape{
         g2.drawRoundRect(15, 40, 70, 50, 10, 10);
     }
 
-    @Override
+
     public CompositeShape createShape(int x, int y) {
         return null;
     }
 
-    @Override
+
     public void setSelectable(boolean selectable) {
 
     }

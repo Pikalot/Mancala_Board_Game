@@ -1,65 +1,176 @@
 import java.awt.*;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.GeneralPath;
+import java.awt.geom.*;
 
-public class StonePit implements CompositeShape {
+public class StonePit extends SelectableShape {
     private int x;
     private int y;
-    private int radius;
-    private boolean selectable = false;
-    private GeneralPath path;
+    private int width;
+    private int height;
+    private int numberOfStones;
+    private Shape shape;
+    private final int STONE_SIZE = 20;
+    private Color color;
+    
+    /**
+     * Constructor for PitShape class
+     * @param x the x-coordinate of the pit
+     * @param y the y-coordinate of the pit
+     * @param width the width of the pit
+     * @param height the height of the pit
+     */
+    public StonePit(int x, int y, int width, int height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
 
-    public StonePit(int x, int y, int radius) {
-        path = new GeneralPath();
+    /**
+     * Fills in the pit and draws the marbles in them
+     * @param g graphics
+     */
+    public void fill(Graphics2D g) {
+        g.setColor(Color.BLACK);
+        g.setStroke(new BasicStroke(10));
+        g.draw(shape);
+        g.setStroke(new BasicStroke(3));
 
-        // Define the main shape for StonePit, e.g., a circle
-        Ellipse2D pit = new Ellipse2D.Double(x, y, radius , radius/2);
-        path.append(pit, false);
+        // Print the number of stones in a pit
+        if (getNumberOfStones() > 0) {
+            g.setColor(Color.WHITE);
+            Font font = new Font("Arial", Font.BOLD, 20);
+            g.setFont(font);
+            g.drawString(getNumberOfStones() + "", x + 30, y + 20);
+        }
+
+        // Draw stones in overlapping fashion
+        int row = 1;
+        for (int i = 0; i < getNumberOfStones(); i++) {
+            double x;
+            double y;
+            if (row % 2 == 1) {
+                x = this.x + 30;
+                y = (this.y + 5) + 8 * row / 1.5;
+            } else {
+                x = this.x + 15;
+                y = (this.y + 5) + 8 * row / 1.5;
+            }
+
+            Ellipse2D.Double stone = new Ellipse2D.Double(x, y + 25, getSTONE_SIZE(), getSTONE_SIZE() - 10);
+            g.setColor(Color.LIGHT_GRAY);
+            g.fill(stone);
+            g.setColor(Color.BLACK);
+            g.setStroke (new BasicStroke(2));
+            g.draw(stone);
+            row++;
+        }
     }
 
     @Override
-    public void draw(Graphics2D g2) {
-        g2.setColor(Color.GRAY);
-        g2.fill(path);
-        g2.setColor(Color.BLACK);
-        g2.draw(path);
+    public void setColor(Color c) {
+        this.color = c;
     }
 
     @Override
-    public CompositeShape createShape(int newX, int newY) {
-        return new StonePit(newX, newY, this.radius);
+    public Color getColor() {
+        return color;
     }
 
-  /*  @Override
-    public boolean isSelected() {
-        return contains()
-    }*/
+    /**
+     * Draws the pit with stones
+     * @param g graphics
+     */
+    @Override
+    public void draw (Graphics2D g)
+    {
+        g.draw(shape);
+        fill(g);
+    }
 
     @Override
-    public boolean contains(int x, int y) {
-        return path.contains(x, y);
+    public void translate(double dx, double dy) {
+        x += dx;
+        y += dy;
     }
 
     @Override
-    public void setSelectable(boolean selectable) {
-        this.selectable = selectable;
+    public void drawSelection(Graphics2D g) {
+        Color previous = g.getColor(); // Save the current color
+        g.setColor(new Color(255, 255, 200, 128)); // Set translucent highlight color
+        g.fill(shape); // Fill the shape for selection
+        g.setColor(Color.RED); // Highlight border
+        g.setStroke(new BasicStroke(3));
+        g.draw(shape); // Draw border around the shape
+        g.setColor(previous); // Restore the original color
     }
 
-    public boolean isSelectable() {
-        return selectable;
+    /**
+     * Checks if the pit contains a specified point
+     * @param p the point to be checked
+     * @return true if point is in pit, false otherwise
+     */
+    @Override
+    public boolean contains(Point2D p) {
+        return shape.contains(p);
     }
 
+    /**
+     * Sets the shape of a pit to a specified shape
+     * @param s the shape to set the pit to
+     */
+    public void setShape(Shape s) {
+        shape = s;
+    }
+
+    /**
+     * Gets the shape of the pit
+     * @return the pit's shape
+     */
+    public Shape getShape() {
+        return shape;
+    }
+
+    /**
+     * Gets the X coordinate of the pit
+     * @return the X coordinate of the pit
+     */
     public int getX() {
         return x;
     }
 
+    /**
+     * Gets the Y coordinate of the pit
+     * @return the Y coordinate of the pit
+     */
     public int getY() {
         return y;
     }
 
-    public int getRadius() {
-        return radius;
+    /**
+     * Gets the width of the pit
+     * @return the width of the pit
+     */
+    public int getWidth() {
+        return width;
     }
 
-}
+    /**
+     * Gets the height of the pit
+     * @return the height of the pit
+     */
+    public int getHeight() {
+        return height;
+    }
 
+    public int getNumberOfStones() {
+        return numberOfStones;
+    }
+
+    public void setNumberOfStones(int numberOfStones) {
+        this.numberOfStones = numberOfStones;
+    }
+
+    public int getSTONE_SIZE() {
+        return STONE_SIZE;
+    }
+}
