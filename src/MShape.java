@@ -8,7 +8,7 @@ public interface MShape {
     void drawSelection(Graphics2D g);
     void translate(double dx, double dy);
     boolean contains(Point2D p);
-    MShape createShape(int x, int y);
+//    MShape createShape(int x, int y);
     void setColor(Color c);
     Color getColor();
 }
