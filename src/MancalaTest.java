@@ -16,7 +16,8 @@ import javax.swing.*;
  */
 public class MancalaTest {
     public static void main(String[] args) {
-        MancalaBoard mFrame = new MancalaBoard();
+        MancalaModel model = new MancalaModel(new OakBoardFormat());
+        MancalaBoard mFrame = new MancalaBoard(model);
         mFrame.setVisible(true);
         mFrame.setLocation(450, 250);
         mFrame.setTitle("Mancala Game");

@@ -54,6 +54,7 @@ public class MancalaModel {
         for(int i = 0; i < getPits().length; i++) {
             if (!isInPlayerPit(i))
                 getPits()[i] = stones;
+            else getPits()[i] = 0; // Mancala Pit
         }
         this.notifyListeners();
     }
@@ -168,6 +169,12 @@ public class MancalaModel {
             return getPits()[PLAYER_B_PIT];
         }
         return 0;
+    }
+
+    public void startNewGame() {
+        for (MancalaView l: listeners) {
+            l.startGame();
+        }
     }
 
     public ArrayList<MancalaView> getListeners() {

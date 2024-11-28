@@ -7,11 +7,11 @@ import java.awt.event.MouseEvent;
  * A concrete MancalaBoard class to initialize and manage the main game window, user controls, and game setup.
  * @author Ahsan Ali, Tuan-Anh Ho
  */
-public class MancalaBoard extends JFrame {
+public class MancalaBoard extends JFrame implements MancalaController {
     public final int WIDTH = 870;
     public final int HEIGHT = 550;
-    private final MancalaView boardView;
-    private final MancalaModel mancalaModel;
+    private MancalaView boardView;
+    private MancalaModel mancalaModel;
     private String selectedFormat;
     private String selectedStones;
     private JPanel selectionPanel;
@@ -19,11 +19,11 @@ public class MancalaBoard extends JFrame {
     /**
      * Constructs a new board
      */
-    public MancalaBoard() {
+    public MancalaBoard(MancalaModel model) {
         super();
         this.setSize(WIDTH, HEIGHT);
         this.setResizable(false);
-        mancalaModel = new MancalaModel(new OakBoardFormat());
+        mancalaModel = model;
         boardView = new MancalaView(mancalaModel);
 
         // Set up the lower panel with Undo and Restart buttons
@@ -59,7 +59,7 @@ public class MancalaBoard extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (mancalaModel.getState() == GameState.COMPLETE) {
-                    setupGame(selectedFormat, Integer.parseInt(selectedStones), controlPanel, selectionPanel);
+                    setupGame(controlPanel, selectionPanel);
                 }
             }
         });
@@ -96,7 +96,7 @@ public class MancalaBoard extends JFrame {
             selectedStones = (String) stoneSelector.getSelectedItem();
 
             if (isValidSelection(selectedFormat, selectedStones)) {
-                setupGame(selectedFormat, Integer.parseInt(selectedStones), controlPanel, selectionPanel);
+                setupGame(controlPanel, selectionPanel);
             } else {
                 JOptionPane.showMessageDialog(this, "Please make valid selections for both options.");
             }
@@ -118,8 +118,8 @@ public class MancalaBoard extends JFrame {
     /**
      * Configures the game based on the user's selections and updates the UI.
      */
-    private void setupGame(String boardFormat, int stoneCount, JPanel controlPanel, JPanel selectionPanel) {
-        mancalaModel.setStones(stoneCount);
+    private void setupGame(JPanel controlPanel, JPanel selectionPanel) {
+      /*  mancalaModel.setStones(stoneCount);
         mancalaModel.setState(GameState.BEGIN);
 
         if (boardFormat.equals("Flowery Board")) {
@@ -127,11 +127,12 @@ public class MancalaBoard extends JFrame {
         }
         else if (boardFormat.equals("Oak Board")) {
             mancalaModel.setFormat(new OakBoardFormat());
-        }
-
+        }*/
+        notifyModel();
         togglePanelVisibility(selectionPanel, false);
         togglePanelVisibility(controlPanel, true);
-        boardView.startGame();
+//        boardView.startGame();
+        mancalaModel.startNewGame();
     }
 
     /**
@@ -157,5 +158,17 @@ public class MancalaBoard extends JFrame {
     @Override
     public int getHeight() {
         return HEIGHT;
+    }
+
+    @Override
+    public void notifyModel() {
+        mancalaModel.setStones(Integer.parseInt(selectedStones));
+        mancalaModel.setState(GameState.BEGIN);
+        if (selectedFormat.equals("Flowery Board")) {
+            mancalaModel.setFormat(new FloweryFormat());
+        }
+        else if (selectedFormat.equals("Oak Board")) {
+            mancalaModel.setFormat(new OakBoardFormat());
+        }
     }
 }
