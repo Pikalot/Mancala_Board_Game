@@ -31,16 +31,18 @@ public class StonePit extends SelectableShape {
      */
     public void fill(Graphics2D g) {
         g.setColor(Color.BLACK);
-        g.setStroke(new BasicStroke(10));
-        g.draw(shape);
         g.setStroke(new BasicStroke(3));
+        g.draw(shape);
+        g.setColor(new Color(210, 180, 140));
+        g.fill(shape);
+        g.setStroke(new BasicStroke(2));
 
         // Print the number of stones in a pit
         if (getNumberOfStones() > 0) {
             g.setColor(Color.WHITE);
-            Font font = new Font("Arial", Font.BOLD, 20);
+            Font font = new Font("Arial", Font.BOLD, 22);
             g.setFont(font);
-            g.drawString(getNumberOfStones() + "", x + 30, y + 20);
+            g.drawString(getNumberOfStones() + "", x + 25, y + 30);
         }
 
         // Draw stones in overlapping fashion
@@ -56,7 +58,7 @@ public class StonePit extends SelectableShape {
                 y = (this.y + 5) + 8 * row / 1.5;
             }
 
-            Ellipse2D.Double stone = new Ellipse2D.Double(x, y + 25, getSTONE_SIZE(), getSTONE_SIZE() - 10);
+            Ellipse2D.Double stone = new Ellipse2D.Double(x, y + 35, getSTONE_SIZE(), getSTONE_SIZE() - 10);
             g.setColor(Color.LIGHT_GRAY);
             g.fill(stone);
             g.setColor(Color.BLACK);
