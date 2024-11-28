@@ -109,8 +109,10 @@ public class MancalaBoard extends JFrame {
      * Validates the user's selections for board format and marble count.
      */
     private boolean isValidSelection(String format, String stones) {
-        return (format != null && stones != null) &&
-                (!format.equals("Select Format") && !stones.equals("Select Marbles"));
+        return (format != null
+                && stones != null
+                && !format.equals("Select Format")
+                && !stones.equals("Select Stones"));
     }
 
     /**

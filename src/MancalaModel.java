@@ -65,9 +65,9 @@ public class MancalaModel {
     public void move(int pitIndex) {
         // Save state
         this.save();
-
         setUndoable(true);
-        resetUndoCount();
+        if (!isLastStone()) resetUndoCount();
+
         // Remove all stones from the selected pit
         int stones = getPits()[pitIndex];
         getPits()[pitIndex] = 0;
@@ -75,6 +75,7 @@ public class MancalaModel {
         // Distribute the stones to adjacent pits and do last stone rule
         int currentPit = dropStones(pitIndex, stones);
         doLastStoneRule(currentPit);
+
 
         // Check if the game is complete (all pits on one side are empty)
         if (isWin()) {
@@ -91,22 +92,19 @@ public class MancalaModel {
      * updating the game state and notifying listeners.
      */
     public void undoMove() {
+        boolean flag = false;
+
         // If undo is not allowed, exit early
         if (!isUndoable()) {
             return;
         }
 
-        boolean flag = false;
-
         // Handle undo logic based on the current player
-        if (undoable(getPlayer())) {
-            incrementUndoCount(getPlayer());
-
+        if (undoable()) {
             // Switch player if previous move belongs to the other player
             if (!isLastStone()) {
                 switchPlayer();
             }
-
             flag = true;
         }
 
@@ -117,6 +115,7 @@ public class MancalaModel {
 
         // Perform the undo operation
         if (flag) {
+            incrementUndoCount(getPlayer());
             setPits(getPrevPits().clone());
             setUndoable(false);
             this.notifyListeners(); // Notify listeners
@@ -271,9 +270,9 @@ public class MancalaModel {
         }
     }
 
-    private boolean undoable(Player player) {
-        int undoCount = (player == Player.A) ? getUndoCount1() : getUndoCount2();
-        return undoCount < MAX_UNDO;
+    private boolean undoable() {
+//        int undoCount = (player == Player.A) ? getUndoCount1() : getUndoCount2();
+        return getUndoCount1() < MAX_UNDO && getUndoCount2() < MAX_UNDO;
     }
 
     private void save() {
@@ -285,13 +284,6 @@ public class MancalaModel {
      */
     private void switchPlayer() {
         setPlayer(getPlayer() == Player.A ? Player.B : Player.A);
-        /*
-                if (getPlayer() == Player.A) {
-                    setPlayer(Player.B);
-                }
-                else {
-                    setPlayer(Player.A);
-                }*/
     }
 
     private void moveLastStoneToMancala() {
@@ -393,9 +385,9 @@ public class MancalaModel {
      */
     private void incrementUndoCount(Player player) {
         if (player == Player.A) {
-            setUndoCount1(getUndoCount1() + 1);
-        } else {
             setUndoCount2(getUndoCount2() + 1);
+        } else {
+            setUndoCount1(getUndoCount1() + 1);
         }
     }
 
