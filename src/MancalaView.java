@@ -4,136 +4,149 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
 
-public class MancalaView extends JComponent implements ChangeListener {
-
-    private ArrayList<Shape> shapes;
-    private ArrayList<PitShape>	pits;
+/**
+ * A concrete class displays the board and pits.
+ * This class serves as an observer in the MVC (Model-View-Controller) architecture
+ * for displaying a list of stone pits. It listens to changes in the model and updates
+ * the stones accordingly.
+ * A MancalaView has an associated Mancala Model and Format Strategy.
+ *
+ * @author Tuan-Anh
+ * @version 1.0 12/05/2024
+ */
+public class MancalaView extends JComponent implements ChangeListener, MancalaController {
+    private ArrayList<StonePit> pit;
     private MancalaModel model;
     private FormatStrategy boardFormat;
     private int[] stoneArray;
+    private int selectedPit;
 
+    /** Constructs a MancalaView with a specified model.*/
     public MancalaView(MancalaModel model) {
         this.model = model;
-        this.boardFormat = boardFormat;
         stoneArray = new int[14];
-        pits = new ArrayList<>();
+        pit = new ArrayList<>();
         boardFormat = this.model.getFormat();
         model.attach(this);
 
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                for (int i = 0; i < pits.size(); i++) {
-                    if (pits.get(i).contains(e.getPoint()) && model.playable(i)) {
-                        model.move(i);
-                        return;
-                    }
+            for (int i = 0; i < pit.size(); i++) {
+                if (pit.get(i).contains(e.getPoint()) && model.playable(i)) {
+                    selectedPit = i;
+                    pit.get(i).setSelected(true);
+                    notifyModel();
+                    return;
                 }
+                if (pit.get(i).isSelected()) pit.get(i).setSelected(false);
+            }
+            repaint();
             }
         });
     }
 
-    public void addPit(PitShape shape) {
-        pits.add(shape);
+    /**
+     * Adds a stone pit shape to the board.
+     * @param shape a stone pit shape
+     */
+    public void addPit(StonePit shape) {
+        pit.add(shape);
     }
 
+    /**
+     * Updates the board by recreating pits
+     * and Mancalas based on the game model's state and stone counts.
+     */
     public void updateGame() {
-        pits = new ArrayList<>();
-
+        pit = new ArrayList<>();
         final int PIT_HEIGHT = 150;
         final int PIT_WIDTH = 80;
         final int TOP_Y = 30;
         final int BOT_Y = 290;
 
-        PitShape pit0 = new PitShape(PIT_WIDTH + PIT_WIDTH/4, TOP_Y, PIT_WIDTH, PIT_HEIGHT);
-        pit0.setShape(boardFormat.formatPitShape(pit0));
-        pit0.setMarbles(stoneArray[0]);
+        for (int i = 0; i < model.MAX_PITS; i++) {
+            // Pits A
+            if (i < model.PLAYER_A_PIT) {
+                StonePit pit = new StonePit((i + 1) * (PIT_WIDTH + PIT_WIDTH/4) + PIT_WIDTH/2, BOT_Y, PIT_WIDTH, PIT_HEIGHT);
+                pit.setNumberOfStones(stoneArray[i]);
+                addPit(pit);
+            }
 
-        PitShape pit1 = new PitShape(2*PIT_WIDTH + PIT_WIDTH/2, TOP_Y, PIT_WIDTH, PIT_HEIGHT); //adds a pit 1
-        pit1.setShape(boardFormat.formatPitShape(pit1));
-        pit1.setMarbles(stoneArray[1]);
+            // Mancala A
+            else if (i == model.PLAYER_A_PIT) {
+                StonePit pit = new StonePit(7 * (PIT_WIDTH + PIT_WIDTH/4) + PIT_WIDTH/2, 60, PIT_WIDTH, 3*PIT_HEIGHT-100); // Mancala B
+                addPit(pit);
 
-        PitShape pit2 = new PitShape(3*PIT_WIDTH + 3*PIT_WIDTH/4, TOP_Y, PIT_WIDTH, PIT_HEIGHT); //adds a pit 2
-        pit2.setShape(boardFormat.formatPitShape(pit2));
-        pit2.setMarbles(stoneArray[2]);
+            }
 
-        PitShape pit3 = new PitShape(5*PIT_WIDTH, TOP_Y, PIT_WIDTH, PIT_HEIGHT); //adds a pit 3
-        pit3.setShape(boardFormat.formatPitShape(pit3));
-        pit3.setMarbles(stoneArray[3]);
+            // Pit B
+            else if (i < model.PLAYER_B_PIT) {
+                StonePit pit = new StonePit((13 - i) * (PIT_WIDTH + PIT_WIDTH/4) + PIT_WIDTH/2, TOP_Y, PIT_WIDTH, PIT_HEIGHT);
+                pit.setNumberOfStones(stoneArray[i]);
+                addPit(pit);
+            }
 
-        PitShape pit4 = new PitShape(6*PIT_WIDTH + PIT_WIDTH/4, TOP_Y, PIT_WIDTH, PIT_HEIGHT); //adds a pit 4
-        pit4.setShape(boardFormat.formatPitShape(pit4));
-        pit4.setMarbles(stoneArray[4]);
-
-        PitShape pit5 = new PitShape(7*PIT_WIDTH + PIT_WIDTH/2, TOP_Y, PIT_WIDTH, PIT_HEIGHT); //adds a pit 5
-        pit5.setShape(boardFormat.formatPitShape(pit5));
-        pit5.setMarbles(stoneArray[5]);
-
-        PitShape leftMancala = new PitShape(7, 60, PIT_WIDTH, 3*PIT_HEIGHT-100);
-        leftMancala.setShape(boardFormat.formatPitShape(leftMancala));
-        leftMancala.setMarbles(stoneArray[6]);
-
-        //bottom pits
-        PitShape pit7 = new PitShape(PIT_WIDTH + PIT_WIDTH/4, BOT_Y, PIT_WIDTH, PIT_HEIGHT);
-        pit7.setShape(boardFormat.formatPitShape(pit7));
-        pit7.setMarbles(stoneArray[7]);
-
-        PitShape pit8 = new PitShape(2*PIT_WIDTH + PIT_WIDTH/2, BOT_Y, PIT_WIDTH, PIT_HEIGHT);
-        pit8.setShape(boardFormat.formatPitShape(pit8));
-        pit8.setMarbles(stoneArray[8]);
-
-        PitShape pit9 = new PitShape(3*PIT_WIDTH + 3*PIT_WIDTH/4, BOT_Y, PIT_WIDTH, PIT_HEIGHT);
-        pit9.setShape(boardFormat.formatPitShape(pit9));
-        pit9.setMarbles(stoneArray[9]);
-
-        PitShape pit10 = new PitShape(5*PIT_WIDTH, BOT_Y, PIT_WIDTH, PIT_HEIGHT);
-        pit10.setShape(boardFormat.formatPitShape(pit10));
-        pit10.setMarbles(stoneArray[10]);
-
-        PitShape pit11 = new PitShape(6*PIT_WIDTH + PIT_WIDTH/4, BOT_Y, PIT_WIDTH, PIT_HEIGHT);
-        pit11.setShape(boardFormat.formatPitShape(pit11));
-        pit11.setMarbles(stoneArray[11]);
-
-        PitShape pit12 = new PitShape(7*PIT_WIDTH + PIT_WIDTH/2, BOT_Y, PIT_WIDTH, PIT_HEIGHT);
-        pit12.setShape(boardFormat.formatPitShape(pit12));
-        pit12.setMarbles(stoneArray[12]);
-
-        PitShape rightMancala = new PitShape(693 , 60, PIT_WIDTH, 3*PIT_HEIGHT-100);
-        rightMancala.setShape(boardFormat.formatPitShape(rightMancala));
-        rightMancala.setMarbles(stoneArray[13]);
-
-        // Add Shapes in right order
-        addPit(pit7);
-        addPit(pit8);
-        addPit(pit9);
-        addPit(pit10);
-        addPit(pit11);
-        addPit(pit12);
-        addPit(rightMancala);
-        addPit(pit5);
-        addPit(pit4);
-        addPit(pit3);
-        addPit(pit2);
-        addPit(pit1);
-        addPit(pit0);
-        addPit(leftMancala);
+            // Mancala B
+            else {
+                StonePit pit = new StonePit( PIT_WIDTH/2, 60, PIT_WIDTH, 3*PIT_HEIGHT-100);
+                addPit(pit);
+            }
+        }
     }
 
+    /** Customizes the painting of this component by implementing FormatStrategy.
+     *
+     * @param g the <code>Graphics</code> object to paint.
+     */
     @Override
     public void paintComponent(Graphics g) {
-
-        g.drawImage(boardFormat.backgroundImg(), 0, 0, this);
-
+        super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
+        g.drawImage(boardFormat.backgroundImg(), 0, 0, this);
+        for(int i = 0; i < pit.size(); i++) {
+            StonePit currentPit = this.pit.get(i);
+            StringBuilder label = new StringBuilder();
+            int rotateY = currentPit.getY() + currentPit.getHeight()* 2/3;
 
-//		for(Shape s: shapes) {
-//			g2.draw(s);
-//		}
-        for(PitShape p: pits) {
-            p.fill(g2);
+            currentPit.draw(g2);
+            g2.setColor(boardFormat.getColor());
+
+            if (currentPit.isSelected()) {
+                currentPit.drawSelection(g2);
+            }
+
+            if (i <= model.PLAYER_A_PIT) {
+                label.append("A");
+                if (i == model.PLAYER_A_PIT) {
+                    int rotateX = currentPit.getX() + currentPit.getWidth() + 25;
+                    label.insert(0, "MANCALA  ");
+                    g2.rotate(-Math.PI / 2, rotateX, rotateY);
+                    g.drawString(label.toString(), rotateX, rotateY);
+                    g2.rotate(Math.PI / 2, rotateX, rotateY);
+                }
+                else {
+                    label.append(i + 1);
+                    g2.drawString(label.toString(), currentPit.getX() + currentPit.getWidth()/3, currentPit.getY() + currentPit.getHeight() + 20);
+                }
+            }
+            else {
+                label.append("B");
+                if (i == model.PLAYER_B_PIT) {
+                    int rotateX = currentPit.getX() - 10;
+                    label.insert(0, "MANCALA  ");
+                    g2.rotate(-Math.PI / 2, rotateX, rotateY);
+                    g.drawString(label.toString(), rotateX, rotateY);
+                    g2.rotate(Math.PI / 2, rotateX, rotateY);
+                } else {
+                    label.append(i - 6);
+                    g2.setColor(boardFormat.getColor());
+                    g2.drawString(label.toString(), currentPit.getX() + currentPit.getWidth()/3, currentPit.getY() - 5);
+                }
+            }
         }
 
-        //player information
+        // Show player's turns
         String turnInfo = "";
         String finalScore = "";
 
@@ -145,39 +158,56 @@ public class MancalaView extends JComponent implements ChangeListener {
                 turnInfo = "Player B's Turn";
             }
         }
-        else if (model.getState() == GameState.COMPLETE) {
+
+        if (model.getState() == GameState.COMPLETE) {
             turnInfo = "Final Score: ";
             finalScore = "Player A's " + model.getScoreCard(Player.A) +
                     " - Player B's " + model.getScoreCard(Player.B);
         }
-        g.setColor(Color.WHITE);//Set g color to black for font
-        g.setFont(new Font("Arial", Font.BOLD, 16));
 
+        g2.setColor(boardFormat.getColor()); // Set text color
+        g2.setFont(boardFormat.getFont());
         g2.drawString(turnInfo, (getWidth()/2)-200,getHeight()/2); //print turn information
         g2.drawString(finalScore,(getWidth()/2)-200,getHeight()/2+20);
     }
 
+    /**
+     * Sets the visibility of the game board.
+     * @param visibility true for showing the board and false for hiding the board
+     */
     public void setVisibility(boolean visibility) {
         this.setVisible(visibility);
     }
 
-//    public void setBoardFormat(BoardFormat formatType) {
-//        boardFormat = formatType;
-//        updateGame();
-//    }
-
+    /**
+     * Updates the view whenever the model notifies it of changes.
+     * This method is part of the Observer pattern.
+     */
     @Override
     public void stateChanged(ChangeEvent e) {
         updateGame();
+        this.boardFormat = model.getFormat();
+        for (StonePit pit: pit) {
+            boardFormat.formatShape(pit);
+        }
         stoneArray = model.getPits();
-        for(int i = 0; i < pits.size(); i++) {
-            pits.get(i).setMarbles(stoneArray[i]);
+        for(int i = 0; i < pit.size(); i++) {
+            pit.get(i).setNumberOfStones(stoneArray[i]);
         }
         repaint();
     }
 
+    /**
+     * Starts the game by updating the state to PLAYING.
+     */
     public void startGame() {
         setVisibility(true);
         model.setState(GameState.PLAYING);
+    }
+
+    /** Notifies the model when a player makes a move. */
+    @Override
+    public void notifyModel() {
+        model.move(selectedPit);
     }
 }
