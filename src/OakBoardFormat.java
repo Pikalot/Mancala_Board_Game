@@ -6,7 +6,7 @@ import java.net.URL;
  * An OakBoardFormat implements the BoardFormat interface to define
  * the board's pit shapes and background image.
  *
- * @author [Your Name]
+ * @author Anthony Warsah Liu
  * @version 1.0 11/18/2024
  */
 public class OakBoardFormat implements FormatStrategy {
