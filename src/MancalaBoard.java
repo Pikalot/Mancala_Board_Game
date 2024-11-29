@@ -6,6 +6,7 @@ import java.awt.event.MouseEvent;
 /**
  * A concrete MancalaBoard class to initialize and manage the main game window, user controls, and game setup.
  * @author Ahsan Ali, Tuan-Anh Ho
+ * @version 1.1 12/05/2024
  */
 public class MancalaBoard extends JFrame implements MancalaController {
     public final int WIDTH = 870;
@@ -119,20 +120,9 @@ public class MancalaBoard extends JFrame implements MancalaController {
      * Configures the game based on the user's selections and updates the UI.
      */
     private void setupGame(JPanel controlPanel, JPanel selectionPanel) {
-      /*  mancalaModel.setStones(stoneCount);
-        mancalaModel.setState(GameState.BEGIN);
-
-        if (boardFormat.equals("Flowery Board")) {
-            mancalaModel.setFormat(new FloweryFormat());
-        }
-        else if (boardFormat.equals("Oak Board")) {
-            mancalaModel.setFormat(new OakBoardFormat());
-        }*/
         notifyModel();
         togglePanelVisibility(selectionPanel, false);
         togglePanelVisibility(controlPanel, true);
-//        boardView.startGame();
-        mancalaModel.startNewGame();
     }
 
     /**
@@ -160,6 +150,9 @@ public class MancalaBoard extends JFrame implements MancalaController {
         return HEIGHT;
     }
 
+    /**
+     * Notifies the model to format a new board game.
+     */
     @Override
     public void notifyModel() {
         mancalaModel.setStones(Integer.parseInt(selectedStones));
@@ -170,5 +163,6 @@ public class MancalaBoard extends JFrame implements MancalaController {
         else if (selectedFormat.equals("Oak Board")) {
             mancalaModel.setFormat(new OakBoardFormat());
         }
+        mancalaModel.startNewGame();
     }
 }

@@ -1,6 +1,12 @@
 import java.awt.*;
 import java.awt.geom.*;
 
+/**
+ * A concrete class representing a stone pit shape that contains stones.
+ *
+ * @author Tuan-Anh Ho
+ * @version 1.0 12/05/2024
+ */
 public class StonePit extends SelectableShape {
     private int x;
     private int y;
@@ -12,7 +18,7 @@ public class StonePit extends SelectableShape {
     private Color color;
     
     /**
-     * Constructor for PitShape class
+     * Constructor for StonePit class
      * @param x the x-coordinate of the pit
      * @param y the y-coordinate of the pit
      * @param width the width of the pit
@@ -26,7 +32,7 @@ public class StonePit extends SelectableShape {
     }
 
     /**
-     * Fills in the pit and draws the marbles in them
+     * Fills in the pit and draws the stones in them
      * @param g graphics
      */
     public void fill(Graphics2D g) {
@@ -68,11 +74,19 @@ public class StonePit extends SelectableShape {
         }
     }
 
+    /**
+     * Sets a specified color value.
+     * @param c a color value
+     */
     @Override
     public void setColor(Color c) {
         this.color = c;
     }
 
+    /**
+     * Returns the current color value.
+     * @return the current color
+     */
     @Override
     public Color getColor() {
         return color;
@@ -89,12 +103,21 @@ public class StonePit extends SelectableShape {
         fill(g);
     }
 
+    /**
+     * Translates the shape to a new location.
+     * @param dx a specified x location
+     * @param dy a specified y location
+     */
     @Override
     public void translate(double dx, double dy) {
         x += dx;
         y += dy;
     }
 
+    /**
+     * Redraws the selected shape with a red stroke and refills it with highlighted yellow.
+     * @param g a 2D shape
+     */
     @Override
     public void drawSelection(Graphics2D g) {
         Color previous = g.getColor(); // Save the current color
@@ -107,7 +130,7 @@ public class StonePit extends SelectableShape {
     }
 
     /**
-     * Checks if the pit contains a specified point
+     * Checks if the pit contains a specified point.
      * @param p the point to be checked
      * @return true if point is in pit, false otherwise
      */
@@ -117,7 +140,7 @@ public class StonePit extends SelectableShape {
     }
 
     /**
-     * Sets the shape of a pit to a specified shape
+     * Sets the shape of a pit to a specified shape.
      * @param s the shape to set the pit to
      */
     public void setShape(Shape s) {
@@ -125,7 +148,7 @@ public class StonePit extends SelectableShape {
     }
 
     /**
-     * Gets the shape of the pit
+     * Returns the shape of the pit.
      * @return the pit's shape
      */
     public Shape getShape() {
@@ -133,7 +156,7 @@ public class StonePit extends SelectableShape {
     }
 
     /**
-     * Gets the X coordinate of the pit
+     * Returns the X coordinate of the pit.
      * @return the X coordinate of the pit
      */
     public int getX() {
@@ -141,7 +164,7 @@ public class StonePit extends SelectableShape {
     }
 
     /**
-     * Gets the Y coordinate of the pit
+     * Returns the Y coordinate of the pit.
      * @return the Y coordinate of the pit
      */
     public int getY() {
@@ -149,7 +172,7 @@ public class StonePit extends SelectableShape {
     }
 
     /**
-     * Gets the width of the pit
+     * Returns the width of the pit.
      * @return the width of the pit
      */
     public int getWidth() {
@@ -157,21 +180,33 @@ public class StonePit extends SelectableShape {
     }
 
     /**
-     * Gets the height of the pit
+     * Returns the height of the pit.
      * @return the height of the pit
      */
     public int getHeight() {
         return height;
     }
 
+    /**
+     * Returns the number of stones in a pit.
+     * @return an amount of stones
+     */
     public int getNumberOfStones() {
         return numberOfStones;
     }
 
+    /**
+     * Sets the number of stones for a pit.
+     * @param numberOfStones the amount of stones
+     */
     public void setNumberOfStones(int numberOfStones) {
         this.numberOfStones = numberOfStones;
     }
 
+    /**
+     * Returns the size of the stones.
+     * @return the fixed size of a stone
+     */
     public int getSTONE_SIZE() {
         return STONE_SIZE;
     }

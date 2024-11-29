@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * This class holds the number of stones on each pit and manages the game rule and states.
  *
  * @author Tuan-Anh Ho
- * @version 1.0 12/05/2024
+ * @version 1.2 12/05/2024
  */
 public class MancalaModel {
     private ArrayList<MancalaView> listeners;
@@ -83,7 +83,6 @@ public class MancalaModel {
             moveLastStoneToMancala();
             state = GameState.COMPLETE;
         }
-
         // Notify all listeners of the updated game state
         this.notifyListeners();
     }
@@ -109,18 +108,23 @@ public class MancalaModel {
             flag = true;
         }
 
-        // Update game state if required
-        if (isEndgameUndo()) {
-            state = GameState.PLAYING;
-        }
-
         // Perform the undo operation
         if (flag) {
+            // Update game state if required
+            if (isEndgameUndo()) state = GameState.PLAYING;
             incrementUndoCount(getPlayer());
             setPits(getPrevPits().clone());
             setUndoable(false);
             this.notifyListeners(); // Notify listeners
         }
+    }
+
+    /**
+     * Notifies all observers to start a new game.
+     */
+    public void startNewGame() {
+        setState(GameState.PLAYING);
+        notifyListeners();
     }
 
     /**
@@ -171,93 +175,170 @@ public class MancalaModel {
         return 0;
     }
 
-    public void startNewGame() {
-        for (MancalaView l: listeners) {
-            l.startGame();
-        }
-    }
-
+    /**
+     * Returns a list of observers of this model.
+     * @return the list of observers
+     */
     public ArrayList<MancalaView> getListeners() {
         return listeners;
     }
 
+    /**
+     * Sets a new list of observers for this model.
+     * @param listeners a specified list
+     */
     public void setListeners(ArrayList<MancalaView> listeners) {
         this.listeners = listeners;
     }
 
+    /**
+     * Returns an array of stones in all pits.
+     * @return an array of stones number
+     */
     public int[] getPits() {
         return pits;
     }
 
+    /**
+     * Sets an array of stones for all pits.
+     * @param pits a specified array of number of stone
+     */
     public void setPits(int[] pits) {
         this.pits = pits;
     }
 
+    /**
+     * Returns an array of stones in all pits from the game's previous state.
+     * @return an array of stones in previous state
+     */
     public int[] getPrevPits() {
         return prevPits;
     }
 
+    /**
+     * Sets an array of stones for all pits of previous state.
+     * @param prevPits a specified array of number of stones
+     */
     public void setPrevPits(int[] prevPits) {
         this.prevPits = prevPits;
     }
 
+    /**
+     * Returns the current player stored in this model.
+     * @return a current player
+     */
     public Player getPlayer() {
         return player;
     }
 
+    /**
+     * Sets current player for this model.
+     * @param player a specified player
+     */
     public void setPlayer(Player player) {
         this.player = player;
     }
 
+    /**
+     * Returns the state of this game.
+     * @return a game state
+     */
     public GameState getState() {
         return state;
     }
 
+    /**
+     * Sets the game state for this game.
+     * @param state a specified state
+     */
     public void setState(GameState state) {
         this.state = state;
     }
 
+    /**
+     * Checks if the stone is dropped at a player's pit.
+     * @return true if stone is in a player's pit
+     */
     public boolean isLastStone() {
         return isLastStone;
     }
 
+    /**
+     * Sets the result of the query if the last stone is in a player's pit.
+     */
     public void setLastStone(boolean lastStone) {
         isLastStone = lastStone;
     }
 
+    /**
+     * Returns the result of a query if the game is undoable.
+     * @return true if the move is undoable
+     */
     public boolean isUndoable() {
         return isUndoable;
     }
 
+    /**
+     * Sets the result of the query if the move is undoable.
+     */
     public void setUndoable(boolean undoable) {
         isUndoable = undoable;
     }
 
+    /**
+     * Returns the undo count of player A.
+     * @return an undo count
+     */
     public int getUndoCount1() {
         return undoCount1;
     }
 
+    /**
+     * Sets the new undo count value for player A.
+     * @param undoCount1 a value of undo count
+     */
     public void setUndoCount1(int undoCount1) {
         this.undoCount1 = undoCount1;
     }
 
+    /**
+     * Returns the undo count of player B.
+     * @return an undo count
+     */
     public int getUndoCount2() {
         return undoCount2;
     }
 
+    /**
+     * Sets the new undo count value for player B.
+     * @param undoCount2 a value of undo count
+     */
     public void setUndoCount2(int undoCount2) {
         this.undoCount2 = undoCount2;
     }
 
+    /**
+     * Returns the format strategy of this model.
+     * @return a format style
+     */
     public FormatStrategy getFormat() {
         return format;
     }
 
+    /**
+     * Sets a format strategy for this model.
+     * @param format a format style
+     */
     public void setFormat(FormatStrategy format) {
         this.format = format;
         if (getListeners() != null) notifyListeners();
     }
 
+    /**
+     * Returns the current player based on the pit index.
+     * @param pit a pit index
+     * @return a player owns that pit
+     */
     private Player getCurrentPlayer(int pit) {
         if (pit >= 0 && pit <= PLAYER_A_PIT) {
             return Player.A;
@@ -265,10 +346,20 @@ public class MancalaModel {
         else return Player.B;
     }
 
+    /**
+     * Checks if a pit is a Mancala pit based on a pit index.
+     * @param pit a pit index
+     * @return true if the pit is a Mancala pit.
+     */
     private boolean isInPlayerPit(int pit) {
         return (pit == PLAYER_A_PIT || pit == PLAYER_B_PIT);
     }
 
+    /**
+     * Returns the index of the pit opposite to the specified pit index.
+     * @param pit a specified pit index
+     * @return the index of the opposite pit
+     */
     private int getOppositePit(int pit) {
         if(pit <=12) {
             return 12 - pit;
@@ -277,11 +368,17 @@ public class MancalaModel {
         }
     }
 
+    /**
+     * Checks if players can undo a move based on their undo counts.
+     * @return true if the count is less than 3.
+     */
     private boolean undoable() {
-//        int undoCount = (player == Player.A) ? getUndoCount1() : getUndoCount2();
         return getUndoCount1() < MAX_UNDO && getUndoCount2() < MAX_UNDO;
     }
 
+    /**
+     * Saves the state of the board.
+     */
     private void save() {
         setPrevPits(getPits().clone());
     }
@@ -293,6 +390,9 @@ public class MancalaModel {
         setPlayer(getPlayer() == Player.A ? Player.B : Player.A);
     }
 
+    /**
+     * Moves all remaining stones to respective player's pits when game ends.
+     */
     private void moveLastStoneToMancala() {
         for (int i = 0; i < MAX_PITS; ++i) {
             if (!isInPlayerPit(i)) { // Skip the Mancala pit
@@ -305,10 +405,20 @@ public class MancalaModel {
         }
     }
 
+    /**
+     * Returns the Mancala pit index of a player's.
+     * @param player a specified player
+     * @return the index of the player's Mancala
+     */
     private int getPlayerMancala(Player player) {
         return player == Player.A ? PLAYER_A_PIT : PLAYER_B_PIT;
     }
 
+    /**
+     * Applies the last stone rule, granting a free move if it lands in the player's Mancala,
+     * stealing stones if it lands in an empty pit, or switching turns otherwise.
+     * @param pit a specified pit index
+     */
     private void doLastStoneRule(int pit) {
         // Last stone lands on own Mancala
         if (isOwnMancala(pit)) {
@@ -324,16 +434,33 @@ public class MancalaModel {
         switchPlayer();
     }
 
+    /**
+     * Checks if the specified pit index is the player's own Mancala.
+     * @param pit the index of the pit to check
+     * @return true if the pit is the player's Mancala, false otherwise
+     */
     private boolean isOwnMancala(int pit) {
         return getCurrentPlayer(pit) == getPlayer() && isInPlayerPit(pit);
     }
 
+    /**
+     * Checks if the specified pit is the player's own empty pit
+     * and the opposite pit has stones.
+     * @param pit the index of the pit to check
+     * @return true if the pit is the player's own, is empty, and the opposite pit contains stones
+     */
     private boolean isOwnEmptyPit(int pit) {
         return getCurrentPlayer(pit) == getPlayer() &&
                 getPits()[pit] == 1 &&
                 getPits()[getOppositePit(pit)] > 0;
     }
 
+    /**
+     * Transfers all stones from the specified pit and its opposite pit
+     * to the player's Mancala, leaving both pits empty.
+     *
+     * @param currentPit the index of the current pit whose stones will be stolen
+     */
     private void stealStones(int currentPit) {
         int stones = getPits()[currentPit] + getPits()[getOppositePit(currentPit)];
         getPits()[currentPit] = 0;
@@ -343,6 +470,12 @@ public class MancalaModel {
         getPits()[mancala] += stones; // Pass all stone to that player pit
     }
 
+    /**
+     * Checks if the game has ended by determining if all pits
+     * on one player's side are empty.
+     *
+     * @return true if either Player A's or Player B's pits are all empty
+     */
     private boolean isWin() {
         int pAPits = 0;
         int pBPits = 0;
@@ -369,6 +502,13 @@ public class MancalaModel {
         }
     }
 
+    /**
+     * Distributes stones starting from the specified pit, skipping opponent's Mancala pits,
+     * and returns the index of the last pit where a stone is placed.
+     * @param startPit the index of the pit to start dropping stones from
+     * @param stones the number of stones to distribute
+     * @return the index of the last pit where a stone is placed
+     */
     private int dropStones(int startPit, int stones) {
         int currentPit = startPit;
 
@@ -405,5 +545,4 @@ public class MancalaModel {
         return (getUndoCount1() < MAX_UNDO || getUndoCount2() < MAX_UNDO)
                 && getState().equals(GameState.COMPLETE);
     }
-
 }

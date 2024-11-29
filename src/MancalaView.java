@@ -12,7 +12,7 @@ import javax.swing.event.*;
  * A MancalaView has an associated Mancala Model and Format Strategy.
  *
  * @author Tuan-Anh
- * @version 1.0 12/05/2024
+ * @version 1.1 12/05/2024
  */
 public class MancalaView extends JComponent implements ChangeListener, MancalaController {
     private ArrayList<StonePit> pits;
@@ -144,6 +144,7 @@ public class MancalaView extends JComponent implements ChangeListener, MancalaCo
 
             currentPit.draw(g2);
             g2.setColor(boardFormat.getColor());
+            g2.setFont(boardFormat.getFont());
 
             if (currentPit.isSelected()) {
                 currentPit.drawSelection(g2);
@@ -195,6 +196,7 @@ public class MancalaView extends JComponent implements ChangeListener, MancalaCo
      */
     @Override
     public void stateChanged(ChangeEvent e) {
+        setVisibility(true);
         updateGame();
         this.boardFormat = model.getFormat();
         for (StonePit pit: pits) {
@@ -205,14 +207,6 @@ public class MancalaView extends JComponent implements ChangeListener, MancalaCo
             pits.get(i).setNumberOfStones(stoneArray[i]);
         }
         repaint();
-    }
-
-    /**
-     * Starts the game by updating the state to PLAYING.
-     */
-    public void startGame() {
-        setVisibility(true);
-        model.setState(GameState.PLAYING);
     }
 
     /** Notifies the model when a player makes a move. */

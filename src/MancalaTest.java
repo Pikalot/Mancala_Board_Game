@@ -12,7 +12,7 @@ import javax.swing.*;
  * A program allows two players to play a Mancala board game.
  *
  * @author Tuan-Anh Ho
- * @version 1.0 12/05/2024
+ * @version 1.1 12/05/2024
  */
 public class MancalaTest {
     public static void main(String[] args) {
