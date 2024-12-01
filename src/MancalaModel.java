@@ -24,9 +24,9 @@ public class MancalaModel {
     public final int PLAYER_A_PIT = 6;
     public final int PLAYER_B_PIT = 13;
 
-    /** Constructs a Mancala Model with a specified format. */
-    public MancalaModel(FormatStrategy boardFormat){
-        setFormat(boardFormat);
+    /** Constructs a default Mancala Model. */
+    public MancalaModel(){
+        setFormat(new OakBoardFormat()); // A default format for the board
         setListeners(new ArrayList<>());
         setPits(new int[MAX_PITS]);
         setPrevPits(new int[MAX_PITS]);

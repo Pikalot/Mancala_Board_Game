@@ -8,6 +8,7 @@ import java.awt.*;
  * @version 1.0 12/05/2024
  */
 public interface FormatStrategy {
+
     /**
      * Returns the background image to draw.
      * @return an image

@@ -179,7 +179,6 @@ public class MancalaView extends JComponent implements ChangeListener, MancalaCo
                 }
             }
         }
-
     }
 
     /**

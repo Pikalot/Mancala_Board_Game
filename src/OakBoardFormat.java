@@ -10,6 +10,7 @@ import java.net.URL;
  * @version 1.0 11/18/2024
  */
 public class OakBoardFormat implements FormatStrategy {
+
     /**
      * Sets the rectangle shape for a stone pit.
      *
@@ -19,6 +20,7 @@ public class OakBoardFormat implements FormatStrategy {
     public void formatShape(StonePit s) {
         s.setShape(new Rectangle2D.Double(s.getX(), s.getY(), s.getWidth(), s.getHeight()));
     }
+
     /**
      * Returns the dark blue color.
      * @return a white color
@@ -27,14 +29,16 @@ public class OakBoardFormat implements FormatStrategy {
     public Color getColor() {
         return Color.WHITE;
     }
+
     /**
      * Returns the Arial text font.
-     * @return a Arial text font, Bold, with size 24
+     * @return an Arial text font, Bold, with size 24
      */
     @Override
     public Font getFont() {
         return new Font("Arial", Font.BOLD, 24);
     }
+
     /**
      * Returns the oak-themed background image to draw.
      *
