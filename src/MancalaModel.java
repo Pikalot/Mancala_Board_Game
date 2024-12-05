@@ -1,4 +1,5 @@
 import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.util.ArrayList;
 
 /**
@@ -9,7 +10,7 @@ import java.util.ArrayList;
  * @version 1.2 12/05/2024
  */
 public class MancalaModel {
-    private ArrayList<MancalaView> listeners;
+    private ArrayList<ChangeListener> listeners;
     private int[] pits;
     private int[] prevPits;
     private Player player;
@@ -40,7 +41,7 @@ public class MancalaModel {
 
     /** Notifies all registered observers of changes in the model.*/
     private void notifyListeners() {
-        for (MancalaView l : getListeners()){
+        for (ChangeListener l : getListeners()){
             l.stateChanged(new ChangeEvent(this));
         }
     }
@@ -131,7 +132,7 @@ public class MancalaModel {
      * Registers a new observer to the list.
      * @param listener a specified observer
      */
-    public void attach(MancalaView listener) {
+    public void attach(ChangeListener listener) {
         getListeners().add(listener);
     }
 
@@ -179,7 +180,7 @@ public class MancalaModel {
      * Returns a list of observers of this model.
      * @return the list of observers
      */
-    public ArrayList<MancalaView> getListeners() {
+    public ArrayList<ChangeListener> getListeners() {
         return listeners;
     }
 
@@ -187,7 +188,7 @@ public class MancalaModel {
      * Sets a new list of observers for this model.
      * @param listeners a specified list
      */
-    public void setListeners(ArrayList<MancalaView> listeners) {
+    public void setListeners(ArrayList<ChangeListener> listeners) {
         this.listeners = listeners;
     }
 

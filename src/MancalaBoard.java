@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -11,7 +12,7 @@ import java.awt.event.MouseEvent;
 public class MancalaBoard extends JFrame implements MancalaController {
     public final int WIDTH = 870;
     public final int HEIGHT = 550;
-    private MancalaView boardView;
+    private ChangeListener boardView;
     private MancalaModel mancalaModel;
     private String selectedFormat;
     private String selectedStones;
@@ -35,7 +36,7 @@ public class MancalaBoard extends JFrame implements MancalaController {
 
         // Add panels to the main frame
         add(selectionPanel, BorderLayout.SOUTH);
-        add(boardView, BorderLayout.CENTER);
+        add((MancalaView) boardView, BorderLayout.CENTER);
         add(controlPanel, BorderLayout.NORTH);
 
         // Initially hide the control panel
